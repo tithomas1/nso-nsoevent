@@ -1,0 +1,26 @@
+###########
+# 1st stage - Go + dependencies
+###########
+
+FROM golang:latest as gobase
+
+ARG build_date=unspecified
+
+LABEL org.opencontainers.image.title="GoBuild" \
+      org.opencontainers.image.description="Go with packages" \
+      org.opencontainers.image.vendor="Cisco Systems" \
+      org.opencontainers.image.created="${build_date}" \
+      org.opencontainers.image.url="unspecified"
+
+ENV HTTP_PROXY http://proxy.esl.cisco.com:8080
+ENV HTTPS_PROXY http://proxy.esl.cisco.com:8080
+
+# Install required commands if using Alpine-based golang for build
+# RUN apk add --no-cache git
+
+# Dependencies
+RUN go get -u github.com/spf13/pflag && \
+    go get -u github.com/spf13/viper && \
+    go get -u golang.org/x/net/ipv4
+
+WORKDIR /go

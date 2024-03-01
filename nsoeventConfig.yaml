@@ -1,0 +1,32 @@
+---
+nso:
+  #  restconfAPI:      http://:8080
+  #  restconfAPI:      http://192.168.1.92:8080
+  restconfAPI:      https://172.16.1.1:48888
+  user:             ncsadmin
+  password:         ncsadmin
+  connectTimeout:   10s # seconds
+  readTimeout:      10m # minutes. some NSO requests can take a long time
+
+webhooks:
+  - stream:         ncs-events
+    url:            http://192.168.1.108:18080/generic-webhook-trigger/invoke
+    token:          NetGitOps-Pipeline
+    filter:
+      node:
+        - name:     state
+          value:    deleted
+  - stream:         NETCONF
+    disable:        false
+    url:            http://192.168.1.108:18080/generic-webhook-trigger/invoke
+    token:          NetGitOps-Pipeline
+    filter:
+      event:        netconf-config-change
+      node:
+        - name:     datastore
+          value:    running
+        - name:     operation
+          value:    replace
+        - name:     target
+          #value:    /ncs:devices/ncs:device[ncs:name='CT_RTR_McCampbell']/ncs:config/ios:ip/ios:ssh/ios:time-out
+          value:    .*ncs:name='CT_RTR_McCampbell'.*
